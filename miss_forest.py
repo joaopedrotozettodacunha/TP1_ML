@@ -56,9 +56,12 @@ def calcular_mape(y_true, y_pred):
 
 
 param_grid = {
-    "max_iter": [5],
-    "n_estimators": [50],
-    "max_depth": [10]
+    "max_iter": [5, 10],
+    "n_estimators": [50, 100],
+    "max_depth": [10, 20],
+    "max_features": ["sqrt", "log2"],
+    "min_samples_split": [5],
+    "min_samples_leaf": [2]
 }
 
 grid = list(ParameterGrid(param_grid))
@@ -73,11 +76,14 @@ for i, params in enumerate(grid):
     print(params)
 
     rf = RandomForestRegressor(
-        n_estimators=params["n_estimators"],
-        max_depth=params["max_depth"],
-        random_state=17,
-        n_jobs=-1
-    )
+    n_estimators=params["n_estimators"],
+    max_depth=params["max_depth"],
+    max_features=params["max_features"],
+    min_samples_split=params["min_samples_split"],
+    min_samples_leaf=params["min_samples_leaf"],
+    random_state=17,
+    n_jobs=-1
+)
 
     imputador = IterativeImputer(
         estimator=rf,
@@ -123,14 +129,17 @@ for i, params in enumerate(grid):
     mape = calcular_mape(y_true, y_pred)
 
     resultados.append({
-        "max_iter": params["max_iter"],
-        "n_estimators": params["n_estimators"],
-        "max_depth": params["max_depth"],
-        "MAE": mae,
-        "MSE": mse,
-        "RMSE": rmse,
-        "MAPE": mape
-    })
+    "max_iter": params["max_iter"],
+    "n_estimators": params["n_estimators"],
+    "max_depth": params["max_depth"],
+    "max_features": params["max_features"],
+    "min_samples_split": params["min_samples_split"],
+    "min_samples_leaf": params["min_samples_leaf"],
+    "MAE": mae,
+    "MSE": mse,
+    "RMSE": rmse,
+    "MAPE": mape
+})
 
 
 
